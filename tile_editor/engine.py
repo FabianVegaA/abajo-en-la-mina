@@ -2,106 +2,89 @@ import pygame
 from pygame.locals import *
 
 
-def SetWindow(width, height, flags, vsync):
-    return pygame.display.set_mode(
-        (width, height), flags, vsync)
+def set_window(width, height, flags, vsync):
+    return pygame.display.set_mode((width, height), flags, vsync)
 
 
-def SetCaption(caption):
+def set_caption(caption):
     return pygame.display.set_caption(caption)
 
 
-def CreateClock():
+def create_clock():
     return pygame.time.Clock()
 
 
-def Events():
+def events():
     return pygame.event.get()
 
 
-def DisplayUpdate():
+def display_update():
     pygame.display.update()
 
 
-def GetPressedKey():
+def get_pressed_key():
     return pygame.key.get_pressed()
 
 
-def GetMousePos():
+def get_mouse_pos():
     return pygame.mouse.get_pos()
 
 
-def GetMousePressed():
+def get_mouse_pressed():
     return pygame.mouse.get_pressed()
 
 
-def LoadImage(path):
+def load_image(path):
     return pygame.image.load(path)
 
 
-def SetSurface(width, height):
+def set_surface(width, height):
     return pygame.Surface((width, height))
 
+
 # Input
-class Input():
-    def __init__(self, events, keyPressed, mousePos, mousePressed):
+class Input:
+    def __init__(self, events, key_pressed, mouse_pos, mouse_pressed):
         self.events = events
-        self.keyPressed = keyPressed
-        self.mousePos = mousePos
-        self.mousePressed = mousePressed
+        self.key_pressed = key_pressed
+        self.mouse_pos = mouse_pos
+        self.mouse_pressed = mouse_pressed
 
     """KEYBOARD"""
 
-    def GetKeyDown(self, key):
+    def get_key_down(self, key):
         for event in self.events:
             if event.type == pygame.KEYDOWN:
-                if event.key == key:
-                    return True
-                else:
-                    return False
+                return event.key == key
 
-    def GetKeyUp(self, key):
+    def get_key_up(self, key):
         for event in self.events:
             if event.type == pygame.KEYUP:
-                if event.key == key:
-                    return True
-                else:
-                    return False
+                return event.key == key
 
-    def GetKey(self, key):
-        if self.keyPressed[key]:
-            return True
-        else:
-            return False
+    def get_key(self, key):
+        return bool(self.key_pressed[key])
 
     """MOUSE"""
 
-    def GetMouseButton(self, mouseButton):
-        if self.mousePressed[mouseButton]:
-            return True
-        else:
-            return False
+    def get_mouse_button(self, mouse_button):
+        return bool(self.mouse_pressed[mouse_button])
 
-    def GetMouseButtonDown(self, mouseButton):
-        for event in self.events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.mousePressed[mouseButton]:
-                    return True
-                #else:
-                    #return False
+    def get_mouse_button_down(self, mouse_button):
+        return any(
+            (event.type == pygame.MOUSEBUTTONDOWN and self.mouse_pressed[mouse_button])
+            for event in self.events
+        )
 
-    def GetMouseButtonUp(self, mouseButton):
+    def get_mouse_button_up(self, mouse_button):
         for event in self.events:
             if event.type == pygame.MOUSEBUTTONUP:
-                if self.mousePressed[mouseButton]:
-                    return True
-                else:
-                    return False
+                return bool(self.mouse_pressed[mouse_button])
+        return False
 
 
 # GameObject
-class GameObject():
-
+class GameObject:
     def __init__(self, x, y, width, height, sprite):
         self.x = x
         self.y = y
@@ -110,5 +93,5 @@ class GameObject():
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.sprite = sprite
 
-    def DrawObject(self, surface):
+    def draw_object(self, surface):
         surface.blit(self.sprite, self.rect)
